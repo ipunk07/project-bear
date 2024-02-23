@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+    app:
+        build:
+            args:
+                 user: ipunk
+                 uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: bearweb:dev
+        container_name: bear-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./app:/var/www
+        networks:
+            - companybear
+    nginx:
+        image: nginx:latest
+        container_name: bear-nginx
+        restart: unless-stopped
+        ports:
+            - 8089:80
+        volumes:
+            - ./app:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+        networks:
+            - companybear
+
+networks:
+    companybear:
+        driver: bridge
